@@ -74,7 +74,7 @@ violation_api/
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/Bascode-040612V1/Vaolation-slip-app-
 cd Vaolation-slip-app-update
 ```
 
