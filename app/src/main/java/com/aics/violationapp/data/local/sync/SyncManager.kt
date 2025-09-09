@@ -112,9 +112,9 @@ class SyncManager(
                 
                 val response = apiService.submitViolation(
                     ViolationRequest(
-                        studentId = violation.student_id,
+                        student_id = violation.student_id,
                         violations = violations,
-                        recordedBy = violation.recorded_by
+                        recorded_by = violation.recorded_by
                     )
                 )
                 

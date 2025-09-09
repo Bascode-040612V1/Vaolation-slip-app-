@@ -54,7 +54,7 @@ fun PerformanceScreen(navController: NavController) {
         }
     }
     
-    val refreshData = {
+    val refreshData: () -> Unit = {
         scope.launch {
             isLoading = true
             try {
@@ -142,14 +142,14 @@ fun PerformanceScreen(navController: NavController) {
                         onStartSync = {
                             scope.launch {
                                 repository.startSync()
-                                refreshData()
                             }
+                            refreshData()
                         },
                         onClearCache = {
                             scope.launch {
                                 repository.clearCache()
-                                refreshData()
                             }
+                            refreshData()
                         }
                     )
                 }

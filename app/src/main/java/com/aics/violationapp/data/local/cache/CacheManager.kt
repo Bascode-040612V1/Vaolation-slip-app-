@@ -37,7 +37,6 @@ class CacheManager(context: Context) {
                     id = it.id,
                     violation_name = it.violation_name,
                     category = it.category,
-                    penalty_description = it.penalty_description,
                     is_active = it.is_active
                 )
             }.takeIf { it.isNotEmpty() }
@@ -50,7 +49,7 @@ class CacheManager(context: Context) {
                 id = it.id,
                 violation_name = it.violation_name,
                 category = it.category,
-                penalty_description = it.penalty_description,
+                penalty_description = null, // ViolationType doesn't have this field
                 is_active = it.is_active
             )
         }
@@ -76,8 +75,8 @@ class CacheManager(context: Context) {
                 student_name = cached.student_name,
                 year_level = cached.year_level,
                 course = cached.course,
-                section = cached.section,
-                image = cached.image
+                section = cached.section
+                // Student model doesn't have image field
             )
         }
     }
@@ -90,7 +89,7 @@ class CacheManager(context: Context) {
             year_level = student.year_level,
             course = student.course,
             section = student.section,
-            image = student.image,
+            image = null, // Student model doesn't have image field, use default
             expires_at = System.currentTimeMillis() + STUDENT_CACHE_DURATION
         )
         
@@ -154,7 +153,7 @@ class CacheManager(context: Context) {
         }
         
         // Estimate average sizes
-        (violationTypeCount * 100) + (studentCount * 200) + (offenseCountTotal * 50)
+        (violationTypeCount * 100L) + (studentCount * 200L) + (offenseCountTotal * 50L)
     }
     
     suspend fun clearAllCache() = withContext(Dispatchers.IO) {
