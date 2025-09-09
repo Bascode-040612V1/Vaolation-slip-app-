@@ -5,7 +5,8 @@ data class User(
     val username: String = "",
     val email: String = "",
     val password: String = "",
-    val role: String = "guard"
+    val role: String = "guard",
+    val rfid: String? = null
 )
 
 data class LoginRequest(
@@ -17,7 +18,8 @@ data class RegisterRequest(
     val username: String,
     val email: String,
     val password: String,
-    val role: String = "guard"
+    val role: String = "guard",
+    val rfid: String? = null
 )
 
 data class ApiResponse<T>(

@@ -31,15 +31,30 @@ class ViolationRepository(
         }
     }
     
-    suspend fun register(username: String, email: String, password: String): Result<User> = withContext(Dispatchers.IO) {
+    suspend fun register(username: String, email: String, password: String, rfid: String? = null): Result<User> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.register(RegisterRequest(username, email, password))
+            val response = apiService.register(RegisterRequest(username, email, password, "guard", rfid))
             if (response.isSuccessful && response.body()?.success == true) {
                 response.body()?.data?.let { user ->
                     Result.success(user)
                 } ?: Result.failure(Exception("User data is null"))
             } else {
                 Result.failure(Exception(response.body()?.message ?: "Registration failed"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getRfidNumber(): Result<String> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getRfidNumber()
+            if (response.isSuccessful && response.body()?.success == true) {
+                response.body()?.data?.let { rfidNumber ->
+                    Result.success(rfidNumber)
+                } ?: Result.failure(Exception("No RFID data available"))
+            } else {
+                Result.failure(Exception(response.body()?.message ?: "Failed to get RFID number"))
             }
         } catch (e: Exception) {
             Result.failure(e)

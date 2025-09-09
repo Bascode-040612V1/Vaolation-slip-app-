@@ -14,6 +14,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,7 +53,7 @@ fun LoginScreen(
     val preferencesManager = remember { PreferencesManager(context) }
     val authViewModel: AuthViewModel = viewModel {
         AuthViewModel(
-            ViolationRepository(NetworkModule.provideRetrofit(preferencesManager.getBaseUrl())),
+            NetworkModule.provideRepository(context, preferencesManager.getBaseUrl()),
             preferencesManager
         )
     }
@@ -278,11 +280,55 @@ fun LoginScreen(
                             keyboardActions = KeyboardActions(
                                 onDone = {
                                     if (password == confirmPassword) {
-                                        authViewModel.register(fullName, email, password)
+                                        authViewModel.register(fullName, email, password, uiState.rfidNumber)
                                     }
                                 }
                             )
                         )
+                        
+                        // RFID Number field (only for register)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            OutlinedTextField(
+                                value = uiState.rfidNumber ?: "",
+                                onValueChange = { /* Read-only field */ },
+                                label = { Text("RFID Number") },
+                                leadingIcon = {
+                                    Icon(Icons.Default.Badge, contentDescription = null)
+                                },
+                                readOnly = true,
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp),
+                                placeholder = { Text("Tap refresh to get RFID") }
+                            )
+                            
+                            IconButton(
+                                onClick = { authViewModel.refreshRfidNumber() },
+                                enabled = !uiState.isRfidLoading,
+                                modifier = Modifier
+                                    .size(56.dp)
+                                    .background(
+                                        color = PrimaryBlue,
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                            ) {
+                                if (uiState.isRfidLoading) {
+                                    CircularProgressIndicator(
+                                        color = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                } else {
+                                    Icon(
+                                        Icons.Default.Refresh,
+                                        contentDescription = "Refresh RFID",
+                                        tint = Color.White
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     // Error message
@@ -302,7 +348,7 @@ fun LoginScreen(
                                 authViewModel.login(email, password)
                             } else {
                                 if (password == confirmPassword) {
-                                    authViewModel.register(fullName, email, password)
+                                    authViewModel.register(fullName, email, password, uiState.rfidNumber)
                                 }
                             }
                         },

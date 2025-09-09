@@ -15,7 +15,9 @@ data class AuthUiState(
     val isLoggedIn: Boolean = false,
     val user: User? = null,
     val error: String? = null,
-    val isLoginMode: Boolean = true
+    val isLoginMode: Boolean = true,
+    val rfidNumber: String? = null,
+    val isRfidLoading: Boolean = false
 )
 
 class AuthViewModel(
@@ -68,11 +70,11 @@ class AuthViewModel(
         }
     }
     
-    fun register(username: String, email: String, password: String) {
+    fun register(username: String, email: String, password: String, rfid: String? = null) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            repository.register(username, email, password)
+            repository.register(username, email, password, rfid)
                 .onSuccess { user ->
                     preferencesManager.saveUser(user)
                     _uiState.value = _uiState.value.copy(
@@ -85,6 +87,27 @@ class AuthViewModel(
                 .onFailure { exception ->
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
+                        error = exception.message
+                    )
+                }
+        }
+    }
+    
+    fun refreshRfidNumber() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isRfidLoading = true)
+            
+            repository.getRfidNumber()
+                .onSuccess { rfidNumber ->
+                    _uiState.value = _uiState.value.copy(
+                        isRfidLoading = false,
+                        rfidNumber = rfidNumber,
+                        error = null
+                    )
+                }
+                .onFailure { exception ->
+                    _uiState.value = _uiState.value.copy(
+                        isRfidLoading = false,
                         error = exception.message
                     )
                 }

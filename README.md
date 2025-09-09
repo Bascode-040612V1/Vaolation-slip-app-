@@ -233,11 +233,12 @@ Password: teacher123
 
 ### Key Tables
 - **`students`** (RFID DB) - Student information, enrollment details, and profile images
-- **`users`** (Violation DB) - Staff authentication (guards, teachers, admins)
+- **`users`** (Violation DB) - Staff authentication (guards, teachers, admins) **with RFID support**
 - **`violations`** (Violation DB) - Violation records with offense tracking
 - **`violation_types`** (Violation DB) - Predefined violation categories
 - **`penalty_matrix`** (Violation DB) - Dynamic penalty rules
 - **`student_violation_offense_counts`** (Violation DB) - Per-violation offense tracking
+- **`rfid_admin_scans`** (RFID DB) - RFID scan records for admin/guard registration
 
 ### Views
 - **`student_stats`** - Student overview with violation statistics

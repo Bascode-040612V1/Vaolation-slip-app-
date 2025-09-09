@@ -12,6 +12,9 @@ interface ApiService {
     @POST("auth/register.php")
     suspend fun register(@Body request: RegisterRequest): Response<ApiResponse<User>>
     
+    @GET("auth/get_rfid.php")
+    suspend fun getRfidNumber(): Response<ApiResponse<String>>
+    
     @GET("students/search.php")
     suspend fun searchStudent(@Query("student_id") studentId: String): Response<ApiResponse<Student>>
     
