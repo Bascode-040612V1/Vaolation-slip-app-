@@ -39,14 +39,26 @@ class Database {
     }
 }
 
-// Common response function
+// Common response function with optimization
 function sendResponse($success, $message, $data = null) {
-    header('Content-Type: application/json');
-    echo json_encode(array(
+    // Enable gzip compression
+    if (extension_loaded('zlib') && !ob_get_level()) {
+        ob_start('ob_gzhandler');
+    }
+    
+    header('Content-Type: application/json; charset=utf-8');
+    header('X-Content-Type-Options: nosniff');
+    
+    $response = array(
         'success' => $success,
-        'message' => $message,
-        'data' => $data
-    ));
+        'message' => $message
+    );
+    
+    if ($data !== null) {
+        $response['data'] = $data;
+    }
+    
+    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
     exit();
 }
 ?>

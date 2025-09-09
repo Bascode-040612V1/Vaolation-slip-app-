@@ -41,7 +41,7 @@ fun HomeScreen(
     val preferencesManager = remember { PreferencesManager(context) }
     val homeViewModel: HomeViewModel = viewModel {
         HomeViewModel(
-            ViolationRepository(NetworkModule.provideRetrofit(preferencesManager.getBaseUrl())),
+            NetworkModule.provideRepository(context, preferencesManager.getBaseUrl()),
             preferencesManager
         )
     }

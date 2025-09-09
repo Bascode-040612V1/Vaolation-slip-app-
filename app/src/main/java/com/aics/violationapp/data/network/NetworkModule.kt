@@ -1,6 +1,11 @@
 package com.aics.violationapp.data.network
 
+import android.content.Context
 import com.aics.violationapp.data.api.ApiService
+import com.aics.violationapp.data.local.cache.CacheManager
+import com.aics.violationapp.data.local.sync.SyncManager
+import com.aics.violationapp.data.local.analytics.PerformanceMonitor
+import com.aics.violationapp.data.repository.ViolationRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -27,5 +32,13 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
+    }
+    
+    fun provideRepository(context: Context, baseUrl: String): ViolationRepository {
+        val apiService = provideRetrofit(baseUrl)
+        val cacheManager = CacheManager(context)
+        val syncManager = SyncManager(context, apiService)
+        val performanceMonitor = PerformanceMonitor(context)
+        return ViolationRepository(apiService, cacheManager, syncManager, performanceMonitor)
     }
 }
