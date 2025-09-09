@@ -40,12 +40,13 @@ class PerformanceMonitor(context: Context) {
         operation: String,
         block: suspend () -> T
     ): T = withContext(Dispatchers.IO) {
+        val result: T
         val duration = measureTimeMillis {
-            return@measureTimeMillis block()
+            result = block()
         }
         
         recordMetric(operation, duration)
-        block()
+        result
     }
     
     fun recordMetric(operation: String, duration: Long = 0, count: Int = 1) {

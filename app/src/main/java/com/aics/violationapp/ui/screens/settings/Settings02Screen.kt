@@ -48,14 +48,14 @@ fun Settings02Screen(
     
     val authViewModel: AuthViewModel = viewModel {
         AuthViewModel(
-            ViolationRepository(NetworkModule.provideRetrofit(preferencesManager.getBaseUrl())),
+            NetworkModule.provideRepository(context, preferencesManager.getBaseUrl()),
             preferencesManager
         )
     }
     
     val homeViewModel: HomeViewModel = viewModel {
         HomeViewModel(
-            ViolationRepository(NetworkModule.provideRetrofit(preferencesManager.getBaseUrl())),
+            NetworkModule.provideRepository(context, preferencesManager.getBaseUrl()),
             preferencesManager
         )
     }

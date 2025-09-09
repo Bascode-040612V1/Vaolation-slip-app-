@@ -43,7 +43,7 @@ fun StudentViolationScreen(
     val preferencesManager = remember { PreferencesManager(context) }
     val viewModel: StudentViolationViewModel = viewModel {
         StudentViolationViewModel(
-            ViolationRepository(NetworkModule.provideRetrofit(preferencesManager.getBaseUrl())),
+            NetworkModule.provideRepository(context, preferencesManager.getBaseUrl()),
             preferencesManager
         )
     }

@@ -145,7 +145,13 @@ class CacheManager(context: Context) {
         // Rough estimation of cache size in bytes
         val violationTypeCount = violationTypeDao.getCount()
         val studentCount = studentDao.getRecentStudents(limit = Int.MAX_VALUE).size
-        val offenseCountTotal = offenseCountDao.getOffenseCounts("", 0).size
+        // Get total offense count entries by querying with current time (all non-expired entries)
+        val offenseCountTotal = try {
+            // Since we can't get all offense counts directly, estimate based on recent students
+            studentCount * 5 // Estimate 5 offense types per student on average
+        } catch (e: Exception) {
+            0
+        }
         
         // Estimate average sizes
         (violationTypeCount * 100) + (studentCount * 200) + (offenseCountTotal * 50)
